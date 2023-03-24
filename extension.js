@@ -1,1 +1,24 @@
-ext._shutdown = function() {};ext._getStatus = function() { return {status: 2, msg: 'Ready'};}; ext.myBlock = function (a,b,callback){ window.alert('Hello!'); }; var descriptor = { blocks: [ [" ","( hello)","myBlock"],],menus: {},url: 'https://kyleplo.github.io/scratch-extension-creator/help#'Set The First Value To Your API Key And The Second Is The Prompt};ScratchExtensions.register('OpenAI', descriptor, ext);
+(function() {
+  // Define block information
+  var blockInfo = {
+    "opcode": "sayBlock",
+    "blockType": "command",
+    "text": "Say [TEXT] in this block",
+    "arguments": {
+      "TEXT": {
+        "type": "string",
+        "defaultValue": "Hello, world!"
+      }
+    }
+  };
+
+  // Define block function
+  function sayBlock(args) {
+    var target = this.runtime.getTargetForStage();
+    var text = args.TEXT;
+    target.say(text);
+  }
+
+  // Register block with Scratch
+  Scratch.extensions.register("SayBlock", blockInfo, sayBlock);
+})();
