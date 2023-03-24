@@ -1,29 +1,22 @@
-// code
-
 (function(ext) {
-    // Cleanup function when the extension is unloaded
-    ext._shutdown = function() {};
-
-    // Status reporting code
-    // Use this to report missing hardware, plugin or unsupported browser
+    // This function is called when the extension is loaded
     ext._getStatus = function() {
         return {status: 2, msg: 'Ready'};
     };
 
-    // Say block
-    ext.sayBlock = function(text) {
-        // Get the current target sprite
-        var target = this.runtime.getSpriteTarget();
+    // This function is called when the "Say" block is executed
+    ext.say_text = function(text) {
+        // Use the Scratch audio engine to say the text
+        scratchAudio.speak(text);
+    };
 
-        // Make the sprite say the text
-        target.say(text);
+    // Block and block menu descriptions
+    var descriptor = {
+        blocks: [
+            [' ', 'Say %s', 'say_text', 'Hello, world!']
+        ]
     };
 
     // Register the extension
-    Scratch.extensions.register('Say Block', {
-        blocks: [
-            [' ', 'say %s in this block', 'sayBlock', 'Hello, world!']
-        ],
-        menus: {},
-    });
+    ScratchExtensions.register('Text to Speech', descriptor, ext);
 })({});
