@@ -1,51 +1,61 @@
-class AIBlock {
-    constructor() {
-        this.apiKey = "";
-    }
+const API_KEY = "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"
 
+class AIBlock {
     getInfo() {
+        //Metadata for block
         return {
             "id": "AI",
             "name": "AI",
-            "blocks": [
-                {
-                    "opcode": "completePrompt",
-                    "blockType": "reporter",
-                    "text": "complete prompt [string]",
-                    "arguments": {
-                        "string": {
-                            "type": "string",
-                            "defaultValue": "Explain quantum computing in simple terms"
-                        }
-                    }
-                },
-                {
-                    "opcode": "setApiKey",
-                    "blockType": "command",
-                    "text": "set API key to [apiKey]",
-                    "arguments": {
-                        "apiKey": {
-                            "type": "string",
-                            "defaultValue": ""
-                        }
+            "blocks": [{
+                "opcode": "completePrompt",
+                "blockType": "reporter",
+                "text": "complete prompt [string]",
+                "arguments": {
+                    "string": {
+                        "type": "string",
+                        "defaultValue": "Explain quantum computing in simple terms"
                     }
                 }
-            ],
+            }],
+            //don't worry about it
             "menus": {}
         };
     }
 
-    setApiKey({ apiKey }) {
-        this.apiKey = apiKey;
-    }
-
     async completePrompt({ string }) {
-        if (this.apiKey === "") {
-            throw new Error("API key not set.");
-        }
+        //Remove trailing spaces, required for model to work properly
+        const text = string.trim();
+        //Request text completion using Davinci3
+        const url = `https://api.openai.com/v1/engines/tex...`;
 
-        // Rest of the code for the "completePrompt" block
+        const options = {
+            //Has to be post for some reason
+            method: "POST",
+            //Input prompt and a decent length
+            body: JSON.stringify({
+                prompt: text,
+                max_tokens: 300,
+            }),
+            //API key, and JSON content type
+            headers: {
+                Authorization: "Bearer " + API_KEY,
+                "Content-type": "application/json; charset=UTF-8"
+            },
+        };
+
+        console.log("REQUEST:" + url);
+
+        //Fetch and await promise.
+        const response = await fetch(url, options);
+        //Get JSON data
+        const jsonData = await response.json();
+
+        //The ai response will be the first (and only) choices text
+        const output = jsonData.choices[0].text;
+        return output;
     }
+
 }
 
+//Register block with Scratch
 Scratch.extensions.register(new AIBlock());
